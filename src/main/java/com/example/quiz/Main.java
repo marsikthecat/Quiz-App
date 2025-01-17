@@ -3,7 +3,7 @@ package com.example.quiz;
 import com.example.quiz.components.Question;
 import com.example.quiz.components.QuestionSet;
 import com.example.quiz.ui.ResultWindow;
-import java.util.Iterator;
+import java.util.Objects;
 import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -18,27 +18,29 @@ import javafx.util.Duration;
 
 /**
  * Main Quiz Programm.
- * Main: 173 lines.
+ * Main: 106 lines.
  * Option: 26 lines.
  * Question: 30 lines.
- * QuestionSet: 68 lines.
+ * QuestionSet: 75 lines.
  * ResultWindow: 50 lines.
- * 347 lines of code.
+ * 287 lines of code + 30 lines CSS.
  * <p> </p>
  */
 
 public class Main extends Application {
 
-  private Iterator<Question> questionIterator;
+  private QuestionSet questionSet;
   private int correct = 0;
 
   @Override
   public void start(Stage stage) {
     VBox content = new VBox();
     content.setAlignment(Pos.CENTER);
-    questionIterator = new QuestionSet().getQuestion();
-    showQuestion(content, questionIterator.next());
+    questionSet = new QuestionSet();
+    showQuestion(content, questionSet.getNextQuestion());
     Scene scene = new Scene(content, 380, 240);
+    scene.getStylesheets().add(
+            Objects.requireNonNull(getClass().getResource("/styles.css")).toExternalForm());
     stage.setTitle("Quiz");
     stage.setScene(scene);
     stage.show();
@@ -56,8 +58,8 @@ public class Main extends Application {
     content.getChildren().add(label);
     question.getOptions().forEach(option -> {
       Button btn = new Button(option.getOptionContent());
+      btn.getStyleClass().add("custom-button");
       btn.setId(String.valueOf(option.isCorrect()));
-      styleButton(btn);
       VBox.setMargin(btn, new Insets(5, 0, 0, 5));
       btn.setOnAction(e -> handleAnswer(content, btn));
       content.getChildren().add(btn);
@@ -68,8 +70,8 @@ public class Main extends Application {
     content.setStyle(decideBackground(btn));
     PauseTransition pause = new PauseTransition(Duration.seconds(1.5));
     pause.setOnFinished(e -> {
-      if (questionIterator.hasNext()) {
-        showQuestion(content, questionIterator.next());
+      if (!questionSet.isEmpty()) {
+        showQuestion(content, questionSet.getNextQuestion());
       } else {
         endGame(content);
       }
@@ -94,80 +96,11 @@ public class Main extends Application {
       if (resultWindow.isRetry()) {
         content.setDisable(false);
         correct = 0;
-        questionIterator = new QuestionSet().getQuestion();
-        showQuestion(content, questionIterator.next());
+        questionSet = new QuestionSet();
+        showQuestion(content, questionSet.getNextQuestion());
+      } else {
+        System.exit(0);
       }
     });
-  }
-
-  void styleButton(Button btn) {
-    btn.setStyle(
-            "-fx-background-color: linear-gradient(#f2f2f2, #d6d6d6), "
-                    + "linear-gradient(#fcfcfc 0%, #e6e6e6 20%, #d6d6d6 100%), "
-                    + "linear-gradient(#dddddd 0%, #f6f6f6 50%); "
-                    + "-fx-background-insets: 0, 1, 2; "
-                    + "-fx-background-radius: 8, 7, 6; "
-                    + "-fx-padding: 10 20 10 20; "
-                    + "-fx-font-size: 13px; "
-                    + "-fx-font-family: 'Arial'; "
-                    + "-fx-text-fill: #333333; "
-                    + "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 5, 0.5, 0, 1); "
-                    + "-fx-border-color: #b5b5b5; "
-                    + "-fx-border-radius: 8, 7, 6; "
-                    + "-fx-border-width: 1px; "
-                    + "-fx-cursor: hand; "
-                    + "-fx-pref-width: 150px;"
-    );
-    btn.setOnMouseEntered(e -> btn.setStyle(
-            "-fx-background-color: linear-gradient(#e6e6e6, #c2c2c2), "
-                    + "linear-gradient(#f2f2f2 0%, #cccccc 20%, #bfbfbf 100%), "
-                    + "linear-gradient(#cccccc 0%, #e0e0e0 50%); "
-                    + "-fx-background-insets: 0, 1, 2; "
-                    + "-fx-background-radius: 8, 7, 6; "
-                    + "-fx-padding: 10 20 10 20; "
-                    + "-fx-font-size: 13px; "
-                    + "-fx-font-family: 'Arial'; "
-                    + "-fx-text-fill: #000000; "
-                    + "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 5, 0.5, 0, 1); "
-                    + "-fx-border-color: #b5b5b5; "
-                    + "-fx-border-radius: 8, 7, 6; "
-                    + "-fx-border-width: 1px; "
-                    + "-fx-cursor: hand; "
-                    + "-fx-pref-width: 150px;"
-    ));
-    btn.setOnMousePressed(e -> btn.setStyle(
-            "-fx-background-color: linear-gradient(#d6d6d6, #a8a8a8), "
-                    + "linear-gradient(#e6e6e6 0%, #b8b8b8 20%, #a0a0a0 100%), "
-                    + "linear-gradient(#b8b8b8 0%, #d0d0d0 50%); "
-                    + "-fx-background-insets: 0, 1, 2; "
-                    + "-fx-background-radius: 8, 7, 6; "
-                    + "-fx-padding: 10 20 10 20; "
-                    + "-fx-font-size: 13px; "
-                    + "-fx-font-family: 'Arial'; "
-                    + "-fx-text-fill: #000000; "
-                    + "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 5, 0.5, 0, 1); "
-                    + "-fx-border-color: #b5b5b5; "
-                    + "-fx-border-radius: 8, 7, 6; "
-                    + "-fx-border-width: 1px; "
-                    + "-fx-cursor: hand; "
-                    + "-fx-pref-width: 150px;"
-    ));
-    btn.setOnMouseExited(e -> btn.setStyle(
-            "-fx-background-color: linear-gradient(#f2f2f2, #d6d6d6), "
-                    + "linear-gradient(#fcfcfc 0%, #e6e6e6 20%, #d6d6d6 100%), "
-                    + "linear-gradient(#dddddd 0%, #f6f6f6 50%); "
-                    + "-fx-background-insets: 0, 1, 2; "
-                    + "-fx-background-radius: 8, 7, 6; "
-                    + "-fx-padding: 10 20 10 20; "
-                    + "-fx-font-size: 13px; "
-                    + "-fx-font-family: 'Arial'; "
-                    + "-fx-text-fill: #333333; "
-                    + "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 5, 0.5, 0, 1); "
-                    + "-fx-border-color: #b5b5b5; "
-                    + "-fx-border-radius: 8, 7, 6; "
-                    + "-fx-border-width: 1px; "
-                    + "-fx-cursor: hand; "
-                    + "-fx-pref-width: 150px;"
-    ));
   }
 }
