@@ -3,7 +3,6 @@ package com.example.quiz.components;
 /**
  * An Option is a possible Answer of a question, it has its content and
  * the boolean that says if the options is correct or not to the corresponding question.
- * <p> </p>
  */
 
 public class Option {

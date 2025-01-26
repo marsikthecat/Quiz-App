@@ -18,25 +18,23 @@ import javafx.util.Duration;
 
 /**
  * Main Quiz Programm.
- * Main: 106 lines.
- * Option: 26 lines.
- * Question: 30 lines.
- * QuestionSet: 75 lines.
+ * Main: 102 lines.
+ * Option: 25 lines.
+ * Question: 31 lines.
+ * QuestionSet: 81 lines.
  * ResultWindow: 50 lines.
- * 287 lines of code + 30 lines CSS.
- * <p> </p>
+ * 289 lines of code + 30 lines CSS.
  */
 
 public class Main extends Application {
 
-  private QuestionSet questionSet;
+  private QuestionSet questionSet = new QuestionSet();
   private int correct = 0;
 
   @Override
   public void start(Stage stage) {
     VBox content = new VBox();
     content.setAlignment(Pos.CENTER);
-    questionSet = new QuestionSet();
     showQuestion(content, questionSet.getNextQuestion());
     Scene scene = new Scene(content, 380, 240);
     scene.getStylesheets().add(
@@ -59,7 +57,9 @@ public class Main extends Application {
     question.getOptions().forEach(option -> {
       Button btn = new Button(option.getOptionContent());
       btn.getStyleClass().add("custom-button");
-      btn.setId(String.valueOf(option.isCorrect()));
+      if (option.isCorrect()) {
+        btn.setId("correct");
+      }
       VBox.setMargin(btn, new Insets(5, 0, 0, 5));
       btn.setOnAction(e -> handleAnswer(content, btn));
       content.getChildren().add(btn);
@@ -67,7 +67,12 @@ public class Main extends Application {
   }
 
   private void handleAnswer(VBox content, Button btn) {
-    content.setStyle(decideBackground(btn));
+    if (btn.getId() != null) {
+      content.setStyle("-fx-background-color: #bcffbc;");
+      correct++;
+    } else {
+      content.setStyle("-fx-background-color: #ffb0b0;");
+    }
     PauseTransition pause = new PauseTransition(Duration.seconds(1.5));
     pause.setOnFinished(e -> {
       if (!questionSet.isEmpty()) {
@@ -79,18 +84,9 @@ public class Main extends Application {
     pause.play();
   }
 
-  private String decideBackground(Button btn) {
-    if (Boolean.parseBoolean(btn.getId())) {
-      correct++;
-      return "-fx-background-color: #bcffbc;";
-    } else {
-      return "-fx-background-color: #ffb0b0;";
-    }
-  }
-
   private void endGame(VBox content) {
     Platform.runLater(() -> {
-      ResultWindow resultWindow = new ResultWindow(correct, QuestionSet.getSize());
+      ResultWindow resultWindow = new ResultWindow(correct, questionSet.getSize());
       content.setDisable(true);
       resultWindow.showAndWait();
       if (resultWindow.isRetry()) {
