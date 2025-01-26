@@ -1,6 +1,9 @@
 package com.example.quiz.components;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Set of Questions.
@@ -9,12 +12,14 @@ import java.util.ArrayDeque;
 
 public class QuestionSet {
 
-  private final ArrayDeque<Question> questionQueue;
-  private static final int size = 7;
+  private ArrayDeque<Question> questionQueue = new ArrayDeque<>();
+  private int size = 0;
 
   public QuestionSet() {
-    questionQueue = new ArrayDeque<>();
     addQuestions();
+    List<Question> tempQuestionQueue = new ArrayList<>(questionQueue);
+    Collections.shuffle(tempQuestionQueue);
+    this.questionQueue = new ArrayDeque<>(tempQuestionQueue);
   }
 
   private void addQuestions() {
@@ -60,6 +65,7 @@ public class QuestionSet {
     q7.addOption(new Option("Mit Dollar", false));
     q7.addOption(new Option("Mit Kokosnüsse", false));
     questionQueue.addFirst(q7);
+    this.size = questionQueue.size();
   }
   public Question getNextQuestion() {
     return questionQueue.pollFirst();
@@ -69,7 +75,7 @@ public class QuestionSet {
     return questionQueue.isEmpty();
   }
 
-  public static int getSize() {
+  public int getSize() {
     return size;
   }
 }
