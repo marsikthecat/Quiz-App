@@ -1,4 +1,4 @@
-package com.example.quiz.ui;
+package com.example.quiz.utils;
 
 import javafx.geometry.Pos;
 import javafx.scene.Scene;

@@ -1,7 +1,6 @@
-package com.example.quiz.components;
+package com.example.quiz.models;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -21,7 +20,6 @@ public class Question {
   }
 
   public List<Option> getOptions() {
-    Collections.shuffle(options);
     return options;
   }
 

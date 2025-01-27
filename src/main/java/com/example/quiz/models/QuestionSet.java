@@ -1,4 +1,4 @@
-package com.example.quiz.components;
+package com.example.quiz.models;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -17,9 +17,7 @@ public class QuestionSet {
 
   public QuestionSet() {
     addQuestions();
-    List<Question> tempQuestionQueue = new ArrayList<>(questionQueue);
-    Collections.shuffle(tempQuestionQueue);
-    this.questionQueue = new ArrayDeque<>(tempQuestionQueue);
+    this.size = questionQueue.size();
   }
 
   private void addQuestions() {
@@ -65,14 +63,24 @@ public class QuestionSet {
     q7.addOption(new Option("Mit Dollar", false));
     q7.addOption(new Option("Mit Kokosnüsse", false));
     questionQueue.addFirst(q7);
-    this.size = questionQueue.size();
+    scuffleEveryThing(q1, q2, q3, q4, q5, q6, q7);
   }
+
   public Question getNextQuestion() {
     return questionQueue.pollFirst();
   }
 
   public boolean isEmpty() {
     return questionQueue.isEmpty();
+  }
+
+  private void scuffleEveryThing(Question ... questions) {
+    for (Question question : questions) {
+      Collections.shuffle(question.getOptions());
+    }
+    List<Question> tempQuestionQueue = new ArrayList<>(questionQueue);
+    Collections.shuffle(tempQuestionQueue);
+    this.questionQueue = new ArrayDeque<>(tempQuestionQueue);
   }
 
   public int getSize() {

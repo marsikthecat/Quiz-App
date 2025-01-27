@@ -1,4 +1,4 @@
-package com.example.quiz.components;
+package com.example.quiz.models;
 
 /**
  * An Option is a possible Answer of a question, it has its content and
