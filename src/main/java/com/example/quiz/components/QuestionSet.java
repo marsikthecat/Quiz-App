@@ -1,8 +1,6 @@
 package com.example.quiz.components;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -31,6 +29,18 @@ public class QuestionSet extends ArrayList<Question> {
   }
 
   private void loadQuestions() throws IOException {
+    File questionsFile = new File("Questions.csv");
+    if (!questionsFile.exists()) {
+      try {
+        if (questionsFile.createNewFile()) {
+          BufferedWriter writer = new BufferedWriter(new FileWriter(questionsFile));
+          writer.write("What is the capital of France?,Paris,London,Berlin,Madrid,0\n");
+          writer.close();
+        }
+      } catch (IOException e) {
+        e.getCause();
+      }
+    }
     BufferedReader reader = new BufferedReader(new FileReader("Questions.csv"));
     String line;
     while ((line = reader.readLine()) != null) {

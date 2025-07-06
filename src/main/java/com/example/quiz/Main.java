@@ -15,12 +15,12 @@ import javafx.stage.Stage;
 /**
  * Main Quiz Programm.
  * Question: 51 lines.
- * QuestionSet: 85 lines.
+ * QuestionSet: 95 lines.
  * Main: 83 lines.
  * ResultWindow: 40 lines.
  * QuestionListener: 123 lines.
- * Admin: 153 lines.
- * Total: 535 lines.
+ * Admin: 173 lines.
+ * Total: 568 lines.
  */
 
 public class Main extends Application {

@@ -48,7 +48,7 @@ public class Admin extends Stage {
     addButton.setOnAction(e -> {
       try {
         addQuestion(questionField.getText(), optionsField.getText().split(","),
-                Integer.parseInt(correctIndexField.getText()));
+                correctIndexField.getText());
       } catch (IOException ex) {
         throw new RuntimeException(ex);
       }
@@ -93,11 +93,16 @@ public class Admin extends Stage {
   /**
    * Adds a new question to the CSV file.
    */
-  public void addQuestion(String questionText, String[] options, int correctIndex)
+  public void addQuestion(String questionText, String[] options, String correctIndex)
           throws IOException {
-    if (questionText.isEmpty() || options.length < 3 || correctIndex < 0
-            || correctIndex >= options.length) {
-      throw new IllegalArgumentException("Invalid question data");
+    Exception e = checkInput(questionText, options, correctIndex);
+    if (e != null) {
+      Dialog<ButtonType> dialog = new Dialog<>();
+      dialog.setTitle("Input Error");
+      dialog.setContentText(e.getMessage());
+      dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
+      dialog.showAndWait();
+      return;
     }
     StringBuilder sb = new StringBuilder();
     sb.append(questionText).append(",");
@@ -111,8 +116,26 @@ public class Admin extends Stage {
     reloadFile();
   }
 
+  private Exception checkInput(String questionText, String[] options, String correctIndex) {
+    if (questionText == null || questionText.isEmpty()) {
+      return new IllegalArgumentException("Question text cannot be empty");
+    }
+    if (options == null || options.length < 3) {
+      return new IllegalArgumentException("At least three options are required");
+    }
+    try {
+      Integer.parseInt(String.valueOf(correctIndex));
+    } catch (NumberFormatException e) {
+      return new IllegalArgumentException("Correct index must be a valid integer");
+    }
+    if (Integer.parseInt(correctIndex) < 0 || Integer.parseInt(correctIndex) >= options.length) {
+      return new IllegalArgumentException("Correct index must be within the range of options");
+    }
+    return null;
+  }
+
   /**
-     * Removes a question from the CSV file by its index.
+   * Removes a question from the CSV file by its index.
    */
   public void removeQuestion(int questionId) throws IOException {
     List<String> lines = new ArrayList<>();
