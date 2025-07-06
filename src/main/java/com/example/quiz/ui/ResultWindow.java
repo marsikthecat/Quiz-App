@@ -1,17 +1,14 @@
 package com.example.quiz.ui;
 
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 /**
- * Window that shows the result after the quiz is done.
- * Send its attribute to the Main to check if user wants to continue or quit.
+ * ResultWindow class to display the result of the quiz.
+ * It shows the number of correct answers and provides options to retry or close.
  */
 
 public class ResultWindow extends Stage {
@@ -19,28 +16,21 @@ public class ResultWindow extends Stage {
   private boolean retry = false;
 
   /**
-   * Constructor.
+   * Constructor for ResultWindow.
    */
 
-  public ResultWindow(int a, int size) {
-    this.setTitle("Ergebnis");
-    this.initStyle(StageStyle.DECORATED);
-    this.initModality(Modality.APPLICATION_MODAL);
-    VBox content = new VBox();
-    content.setSpacing(10);
-    content.setAlignment(Pos.CENTER);
-    Label l = new Label();
-    l.setStyle("-fx-font-size: 17");
-    l.setText("Du hast " + a + " von " + size + " Antworten richtig");
-    Button repeatButton = new Button("Nochmal versuchen");
-    Button closeButton = new Button("Quiz beenden");
-    closeButton.setOnAction(e -> this.close());
-    repeatButton.setOnAction(e -> {
+  public ResultWindow(int correct, int total) {
+    Label resultLabel = new Label("Correct: " + correct + " / " + total);
+    Button tryAgain = new Button("Try Again");
+    Button close = new Button("Close");
+    tryAgain.setOnAction(e -> {
       retry = true;
       this.close();
     });
-    content.getChildren().addAll(l, closeButton, repeatButton);
-    Scene scene = new Scene(content, 280, 120);
+    close.setOnAction(e -> this.close());
+
+    VBox root = new VBox(resultLabel, tryAgain, close);
+    Scene scene = new Scene(root, 250, 100);
     this.setScene(scene);
   }
 

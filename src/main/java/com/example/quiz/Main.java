@@ -1,42 +1,75 @@
 package com.example.quiz;
 
-import com.example.quiz.components.Question;
 import com.example.quiz.components.QuestionSet;
-import com.example.quiz.ui.ResultWindow;
 import java.util.Objects;
-import javafx.animation.PauseTransition;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
 /**
  * Main Quiz Programm.
- * Main: 102 lines.
- * Option: 25 lines.
- * Question: 31 lines.
- * QuestionSet: 81 lines.
- * ResultWindow: 50 lines.
- * 289 lines of code + 30 lines CSS.
+ * Question: 51 lines.
+ * QuestionSet: 85 lines.
+ * Main: 83 lines.
+ * ResultWindow: 40 lines.
+ * QuestionListener: 123 lines.
+ * Admin: 153 lines.
+ * Total: 535 lines.
  */
 
 public class Main extends Application {
 
-  private QuestionSet questionSet = new QuestionSet();
-  private int correct = 0;
+  private final QuestionSet questionSet = new QuestionSet();
+  private final QuestionListener questionListener = new QuestionListener(questionSet);
 
   @Override
   public void start(Stage stage) {
     VBox content = new VBox();
     content.setAlignment(Pos.CENTER);
-    showQuestion(content, questionSet.getNextQuestion());
+    content.setStyle("-fx-background-color: white");
+
+    Label label = new Label();
+    label.textProperty().bind(questionListener.getQuestionTextProperty());
+    label.setStyle("-fx-font-size: 14pt;");
+    content.getChildren().add(label);
+    content.disableProperty().bind(questionListener.gameFinishedProperty());
+    content.styleProperty().bind(questionListener.getBackgroundColorProperty());
+
+    for (int i = 0; i < 4; i++) {
+      Button optionBtn = new Button();
+      optionBtn.getStyleClass().add("custom-button");
+      VBox.setMargin(optionBtn, new Insets(5, 0, 0, 5));
+      optionBtn.textProperty().bind(
+        switch (i) {
+          case 0 -> questionListener.getOption1Property();
+          case 1 -> questionListener.getOption2Property();
+          case 2 -> questionListener.getOption3Property();
+          case 3 -> questionListener.getOption4Property();
+          default -> throw new IllegalStateException("Unexpected value: " + i);
+        });
+      int finalI = i;
+      optionBtn.setOnAction(e -> questionListener.checkAnswer(finalI));
+      content.getChildren().add(optionBtn);
+    }
     Scene scene = new Scene(content, 380, 240);
+    scene.setOnKeyPressed(e -> {
+      if (e.getCode() == KeyCode.A) {
+        try {
+          Admin admin = new Admin();
+          admin.show();
+          stage.close();
+        } catch (Exception ex) {
+          System.err.println("Error opening admin panel: " + ex.getMessage());
+        }
+        e.consume();
+      }
+    });
     scene.getStylesheets().add(
             Objects.requireNonNull(getClass().getResource("/styles.css")).toExternalForm());
     stage.setTitle("Quiz");
@@ -46,57 +79,5 @@ public class Main extends Application {
 
   public static void main(String[] args) {
     launch(args);
-  }
-
-  private void showQuestion(VBox content, Question question) {
-    content.setStyle("-fx-background-color: white");
-    content.getChildren().clear();
-    Label label = new Label(question.getQuestionContent());
-    label.setStyle("-fx-font-size: 14pt;");
-    content.getChildren().add(label);
-    question.getOptions().forEach(option -> {
-      Button btn = new Button(option.getOptionContent());
-      btn.getStyleClass().add("custom-button");
-      if (option.isCorrect()) {
-        btn.setId("correct");
-      }
-      VBox.setMargin(btn, new Insets(5, 0, 0, 5));
-      btn.setOnAction(e -> handleAnswer(content, btn));
-      content.getChildren().add(btn);
-    });
-  }
-
-  private void handleAnswer(VBox content, Button btn) {
-    if (btn.getId() != null) {
-      content.setStyle("-fx-background-color: #bcffbc;");
-      correct++;
-    } else {
-      content.setStyle("-fx-background-color: #ffb0b0;");
-    }
-    PauseTransition pause = new PauseTransition(Duration.seconds(1.5));
-    pause.setOnFinished(e -> {
-      if (!questionSet.isEmpty()) {
-        showQuestion(content, questionSet.getNextQuestion());
-      } else {
-        endGame(content);
-      }
-    });
-    pause.play();
-  }
-
-  private void endGame(VBox content) {
-    Platform.runLater(() -> {
-      ResultWindow resultWindow = new ResultWindow(correct, questionSet.getSize());
-      content.setDisable(true);
-      resultWindow.showAndWait();
-      if (resultWindow.isRetry()) {
-        content.setDisable(false);
-        correct = 0;
-        questionSet = new QuestionSet();
-        showQuestion(content, questionSet.getNextQuestion());
-      } else {
-        System.exit(0);
-      }
-    });
   }
 }
