@@ -8,9 +8,7 @@ A simple JavaFX-based quiz application that allows users to answer questions and
 
 ## Language
 The current language of the quiz GUI and the question-answer set is in german.
-I forgot to write it in english, but soon I gonna try I18n to support multiple languages.
+I forgot to write it in english, but soon I'm going to try I18n to support multiple languages.
 
-> [!NOTE]
-> If you want to retry the Quiz after you've finished it, something interesting might happen.
 
 
