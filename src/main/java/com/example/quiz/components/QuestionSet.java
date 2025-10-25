@@ -35,8 +35,8 @@ public class QuestionSet extends ArrayList<Question> {
       try {
         if (questionsFile.createNewFile()) {
           BufferedWriter writer = new BufferedWriter(new FileWriter(questionsFile));
-          writer.write("What is the capital of France?, Paris;true, London:false, "
-                  + "Berlin:false, Madrid:false\n");
+          writer.write("What is the capital of France?, Paris;true, London;false, "
+                  + "Berlin;false, Madrid;false\n");
           writer.close();
         }
       } catch (IOException e) {
