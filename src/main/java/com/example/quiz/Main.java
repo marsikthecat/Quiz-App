@@ -14,13 +14,14 @@ import javafx.stage.Stage;
 
 /**
  * Main Quiz Programm.
- * Question: 51 lines.
- * QuestionSet: 95 lines.
- * Main: 83 lines.
+ * Option: 6 lines.
+ * Question: 44 lines.
+ * QuestionSet: 103 lines.
  * ResultWindow: 40 lines.
- * QuestionListener: 123 lines.
- * Admin: 173 lines.
- * Total: 568 lines.
+ * Admin: 169 lines.
+ * Main: 88 lines.
+ * QuestionListener: 139 lines.
+ * Total: 589 lines.
  */
 
 public class Main extends Application {
@@ -54,7 +55,11 @@ public class Main extends Application {
           default -> throw new IllegalStateException("Unexpected value: " + i);
         });
       int finalI = i;
-      optionBtn.setOnAction(e -> questionListener.checkAnswer(finalI));
+      optionBtn.setOnAction(e -> {
+        if (!questionListener.getSubmittedProperty().get()) {
+          questionListener.checkAnswer(finalI);
+        }
+      });
       content.getChildren().add(optionBtn);
     }
     Scene scene = new Scene(content, 380, 240);

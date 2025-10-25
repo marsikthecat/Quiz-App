@@ -1,16 +1,16 @@
-What do things do?,Things do,Things laugh,They are,Nothing,1
-What happens to water at 100 degrees?,Thirst to death,Starve,Evaporate,Freeze,2
-When was World War I?,1912 to 1916,1814 to 1818,1955 to 1975,1914 to 1918,3
-When does water freeze?,At 0 degrees,At 100 degrees,At -22 degrees,Never,0
-What is the capital of Germany?,Munich,Berlin,Bonn,Hamburg,1
-What form of government do we live in?,Dictatorship,Monarchy,Democracy,Autocracy,2
-What is used to pay in England?,Euro,Pound,Dollar,Coconuts,1
-How many continents are there?,4,6,7,5,2
-Which planet is closest to the sun?,Venus,Earth,Mars,Mercury,3
-What is the highest mountain in the world?,K2,Brocken,Mount Everest,Kilimanjaro,2
-How many federal states does Germany have?,12,14,16,18,2
-What is H2O?,Oxygen,Hydrogen,Water,Helium,2
-What color do blue and yellow make?,Green,Purple,Orange,Brown,0
-What is 8 times 7?,56,49,64,63,0
-Which animal is a mammal?,Crocodile,Eagle,Frog,Dolphin,3
-What does a human do next to the apple tree?,Digging a hole,Looking for shade,Counting apples,Dating trees,3
+What happens to water at 100 degrees?, Thirst to death;false, Starve;false, Evaporate;true, Freeze;false
+When was World War I?, 1912 to 1916;false, 1814 to 1818;false, 1955 to 1975;false, 1914 to 1918;true
+When does water freeze?, At 0 degrees;true, At 100 degrees;false, At -22 degrees;false, Never;false
+What is the capital of Germany?, Munich;false, Berlin;true, Bonn;false, Hamburg;false
+What form of government do we live in?, Dictatorship;false, Monarchy;false, Democracy;true, Autocracy;false
+What is used to pay in England?, Euro;false, Pound;true, Dollar;false, Coconuts;false
+How many continents are there?, 4;false, 6;false, 7;true, 5;false
+Which planet is closest to the sun?, Venus;false, Earth;false, Mars;false, Mercury;true
+What is the highest mountain in the world?, K2;false, Brocken;false, Mount Everest;true, Kilimanjaro;false
+How many federal states does Germany have?, 12;false, 14;false, 16;true, 18;false
+What is H2O?, Oxygen;false, Hydrogen;false, Water;true, Helium;false
+What color do blue and yellow make?, Green;true, Purple;false, Orange;false, Brown;false
+What is 8 times 7?, 56;true, 49;false, 64;false, 63;false
+Which animal is a mammal?, Crocodile;false, Eagle;false, Frog;false, Dolphin;true
+What does a human do next to the apple tree?, Digging a hole;false, Looking for shade;false, Counting apples;false, Dating trees;true
+What happens if something happens?, Things happen;true, Nothing;false, Events;true, Something;false

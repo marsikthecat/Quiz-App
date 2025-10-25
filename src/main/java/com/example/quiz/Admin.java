@@ -41,14 +41,12 @@ public class Admin extends Stage {
     TextField questionField = new TextField();
     questionField.setPromptText("Enter question text");
     TextField optionsField = new TextField();
-    optionsField.setPromptText("Enter options separated by commas");
-    TextField correctIndexField = new TextField();
-    correctIndexField.setPromptText("Enter correct option index (0-based)");
+    optionsField.setPromptText("Enter options and their truthiness "
+            + "('Banana;true'), seperated by commas");
     Button addButton = new Button("Add Question");
     addButton.setOnAction(e -> {
       try {
-        addQuestion(questionField.getText(), optionsField.getText().split(","),
-                correctIndexField.getText());
+        addQuestion(questionField.getText(), optionsField.getText().split(","));
       } catch (IOException ex) {
         throw new RuntimeException(ex);
       }
@@ -84,8 +82,8 @@ public class Admin extends Stage {
     });
     VBox allContent = new VBox(10);
     allContent.setPadding(new Insets(6));
-    allContent.getChildren().addAll(
-        label, questionField, optionsField, correctIndexField, addButton, questionList);
+    allContent.getChildren().addAll(label, questionField, optionsField,
+            addButton, questionList);
     Scene scene = new Scene(allContent, 400, 500);
     this.setScene(scene);
   }
@@ -93,9 +91,9 @@ public class Admin extends Stage {
   /**
    * Adds a new question to the CSV file.
    */
-  public void addQuestion(String questionText, String[] options, String correctIndex)
+  public void addQuestion(String questionText, String[] options)
           throws IOException {
-    Exception e = checkInput(questionText, options, correctIndex);
+    Exception e = checkInput(questionText, options);
     if (e != null) {
       Dialog<ButtonType> dialog = new Dialog<>();
       dialog.setTitle("Input Error");
@@ -105,31 +103,26 @@ public class Admin extends Stage {
       return;
     }
     StringBuilder sb = new StringBuilder();
-    sb.append(questionText).append(",");
+    sb.append(questionText);
     for (String option : options) {
-      sb.append(option).append(",");
+      String[] optionSplit = option.split(";");
+      String optionText = optionSplit[0];
+      String isCorrect = optionSplit[1];
+      sb.append(", ").append(optionText).append(";").append(isCorrect);
     }
-    sb.append(correctIndex).append("\n");
+    sb.append("\n");
     BufferedWriter writer = new BufferedWriter(new FileWriter("Questions.csv", true));
     writer.write(sb.toString());
     writer.close();
     reloadFile();
   }
 
-  private Exception checkInput(String questionText, String[] options, String correctIndex) {
+  private Exception checkInput(String questionText, String[] options) {
     if (questionText == null || questionText.isEmpty()) {
       return new IllegalArgumentException("Question text cannot be empty");
     }
-    if (options == null || options.length < 3) {
-      return new IllegalArgumentException("At least three options are required");
-    }
-    try {
-      Integer.parseInt(String.valueOf(correctIndex));
-    } catch (NumberFormatException e) {
-      return new IllegalArgumentException("Correct index must be a valid integer");
-    }
-    if (Integer.parseInt(correctIndex) < 0 || Integer.parseInt(correctIndex) >= options.length) {
-      return new IllegalArgumentException("Correct index must be within the range of options");
+    if (options == null || options.length != 4) {
+      return new IllegalArgumentException("A question needs 4 Options");
     }
     return null;
   }

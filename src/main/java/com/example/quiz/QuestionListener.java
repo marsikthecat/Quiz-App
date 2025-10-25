@@ -30,6 +30,7 @@ public class QuestionListener {
   private final ObjectProperty<String> backgroundColorProperty =
           new SimpleObjectProperty<>("-fx-background-color: white");
   private final BooleanProperty gameFinished = new SimpleBooleanProperty(false);
+  private final BooleanProperty submitted = new SimpleBooleanProperty(false);
 
   /**
    * Constructor that initializes the QuestionListener with a QuestionSet.
@@ -65,10 +66,14 @@ public class QuestionListener {
   }
 
   /**
-   * .
+   * Self-explanatory, obviously.
    */
   public BooleanProperty gameFinishedProperty() {
     return gameFinished;
+  }
+
+  public BooleanProperty getSubmittedProperty() {
+    return submitted;
   }
 
   /**
@@ -78,10 +83,10 @@ public class QuestionListener {
   public void setQuestionAndUpdateProperties() {
     currentQuestion.set(questionSet.readNextQuestion());
     questionTextProperty.set(currentQuestion.get().getQuestionContent());
-    option1Property.set(currentQuestion.get().getOptions().get(0));
-    option2Property.set(currentQuestion.get().getOptions().get(1));
-    option3Property.set(currentQuestion.get().getOptions().get(2));
-    option4Property.set(currentQuestion.get().getOptions().get(3));
+    option1Property.set(currentQuestion.get().getOptions().get(0).optionText());
+    option2Property.set(currentQuestion.get().getOptions().get(1).optionText());
+    option3Property.set(currentQuestion.get().getOptions().get(2).optionText());
+    option4Property.set(currentQuestion.get().getOptions().get(3).optionText());
   }
 
   /**
@@ -91,12 +96,13 @@ public class QuestionListener {
      * After a short pause, it either shows the result window or sets the next question.
      */
   public void checkAnswer(int i) {
-    if (i == currentQuestion.get().getCorrectOptionIndex()) {
+    if (currentQuestion.get().getOptions().get(i).isCorrect()) {
       backgroundColorProperty.set("-fx-background-color: #bcffbc;");
       questionSet.incrementCorrect();
     } else {
       backgroundColorProperty.set("-fx-background-color: #ffb0b0;");
     }
+    submitted.set(true);
     PauseTransition pause = new PauseTransition(Duration.seconds(1.5));
     pause.setOnFinished(e -> {
       if (questionSet.isComplete()) {
@@ -117,6 +123,7 @@ public class QuestionListener {
         setQuestionAndUpdateProperties();
       }
       backgroundColorProperty.set("-fx-background-color: white");
+      submitted.set(false);
     });
     pause.play();
   }

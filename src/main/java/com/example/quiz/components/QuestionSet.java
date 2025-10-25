@@ -1,25 +1,26 @@
 package com.example.quiz.components;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 /**
- * Set of Questions.
+ * Set of questions.
  * Here the questions and options are filled.
  */
-
 public class QuestionSet extends ArrayList<Question> {
 
   private int index;
   private int correct;
 
   /**
-     * Constructor that loads questions from a CSV file.
-     * The file should be in the format: question;option1;option2;option3;option4;correctIndex
+   * Constructor that loads question-data from a CSV file.
    */
-
   public QuestionSet() {
     try {
       loadQuestions();
@@ -34,7 +35,8 @@ public class QuestionSet extends ArrayList<Question> {
       try {
         if (questionsFile.createNewFile()) {
           BufferedWriter writer = new BufferedWriter(new FileWriter(questionsFile));
-          writer.write("What is the capital of France?,Paris,London,Berlin,Madrid,0\n");
+          writer.write("What is the capital of France?, Paris;true, London:false, "
+                  + "Berlin:false, Madrid:false\n");
           writer.close();
         }
       } catch (IOException e) {
@@ -44,20 +46,26 @@ public class QuestionSet extends ArrayList<Question> {
     BufferedReader reader = new BufferedReader(new FileReader("Questions.csv"));
     String line;
     while ((line = reader.readLine()) != null) {
-      String[] splitLine = line.split(",");
-      String questionText = splitLine[0];
-      String option1 = splitLine[1];
-      String option2 = splitLine[2];
-      String option3 = splitLine[3];
-      String option4 = splitLine[4];
-      int correctIndex = Integer.parseInt(splitLine[5]);
-      Question question = new Question(questionText);
-      question.addOptions(List.of(option1, option2, option3, option4));
-      question.setCorrectOptionIndex(correctIndex);
+      Question question = getQuestion(line);
+      question.scuffleOptions();
       add(question);
     }
     scuffleAndStart();
     reader.close();
+  }
+
+  private static Question getQuestion(String line) {
+    String[] splitLine = line.split(",");
+    String questionText = splitLine[0];
+    Question question = new Question(questionText);
+    for (int i = 1; i < 5; i++) {
+      String optionTextWithBoolean = splitLine[i];
+      String[] splitOptionTextWithBoolean = optionTextWithBoolean.split(";");
+      String optionText = splitOptionTextWithBoolean[0];
+      boolean isCorrect = Boolean.parseBoolean(splitOptionTextWithBoolean[1]);
+      question.addOption(new Option(optionText, isCorrect));
+    }
+    return question;
   }
 
   /**

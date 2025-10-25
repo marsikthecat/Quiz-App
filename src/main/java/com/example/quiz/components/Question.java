@@ -1,6 +1,7 @@
 package com.example.quiz.components;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -9,8 +10,7 @@ import java.util.List;
 public class Question {
 
   private final String question;
-  private final List<String> options;
-  private int correctOptionIndex;
+  private final List<Option> options;
 
   /**
    * Constructor for Question.
@@ -27,25 +27,18 @@ public class Question {
   /**
    * Adds an option to the question.
    */
-  public void addOptions(List<String> option) {
-    options.addAll(option);
-  }
-
-  public List<String> getOptions() {
-    return options;
-  }
-
-  public int getCorrectOptionIndex() {
-    return correctOptionIndex;
+  public void addOption(Option option) {
+    options.add(option);
   }
 
   /**
-   * Sets the index of the correct option.
+   * Shuffles the options, so that they are not shown in the order of the .csv file.
    */
-  public void setCorrectOptionIndex(int correctOptionIndex) {
-    if (correctOptionIndex < 0 || correctOptionIndex >= options.size()) {
-      throw new IndexOutOfBoundsException("Invalid index for correct option.");
-    }
-    this.correctOptionIndex = correctOptionIndex;
+  public void scuffleOptions() {
+    Collections.shuffle(options);
+  }
+
+  public List<Option> getOptions() {
+    return options;
   }
 }
