@@ -10,8 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 /**
- * Set of questions.
- * Here the questions and options are filled.
+ * Set of questions, where the questions and options are filled.
  */
 public class QuestionSet extends ArrayList<Question> {
 
@@ -50,7 +49,7 @@ public class QuestionSet extends ArrayList<Question> {
       question.scuffleOptions();
       add(question);
     }
-    scuffleAndStart();
+    shuffleAndStart();
     reader.close();
   }
 
@@ -71,7 +70,7 @@ public class QuestionSet extends ArrayList<Question> {
   /**
    * Shuffles the questions and resets the index and correct count.
    */
-  public void scuffleAndStart() {
+  public void shuffleAndStart() {
     correct = 0;
     index = 0;
     Collections.shuffle(this);

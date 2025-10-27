@@ -1,6 +1,7 @@
 package com.example.quiz;
 
 import com.example.quiz.components.QuestionSet;
+import com.example.quiz.ui.ResultWindow;
 import java.util.Objects;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -9,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -16,21 +18,23 @@ import javafx.stage.Stage;
  * Main Quiz Programm.
  * Option: 6 lines.
  * Question: 44 lines.
- * QuestionSet: 103 lines.
- * ResultWindow: 40 lines.
+ * QuestionSet: 102 lines.
+ * ResultWindow: 43 lines.
  * Admin: 169 lines.
- * Main: 88 lines.
- * QuestionListener: 139 lines.
- * Total: 589 lines.
+ * Main: 104 lines.
+ * QuestionListener: 124 lines.
+ * Total: 692 lines.
  */
 
 public class Main extends Application {
 
   private final QuestionSet questionSet = new QuestionSet();
   private final QuestionListener questionListener = new QuestionListener(questionSet);
+  private final ResultWindow resultWindow = new ResultWindow();
 
   @Override
   public void start(Stage stage) {
+    StackPane root = new StackPane();
     VBox content = new VBox();
     content.setAlignment(Pos.CENTER);
     content.setStyle("-fx-background-color: white");
@@ -41,6 +45,16 @@ public class Main extends Application {
     content.getChildren().add(label);
     content.disableProperty().bind(questionListener.gameFinishedProperty());
     content.styleProperty().bind(questionListener.getBackgroundColorProperty());
+
+    questionListener.gameFinishedProperty().addListener((obs, oldVal, newVal) -> {
+      if (newVal) {
+        resultWindow.init(questionSet.getCorrect(), questionSet.size(), questionListener);
+        resultWindow.toFront();
+      }
+      if (!newVal) {
+        content.toFront();
+      }
+    });
 
     for (int i = 0; i < 4; i++) {
       Button optionBtn = new Button();
@@ -62,7 +76,9 @@ public class Main extends Application {
       });
       content.getChildren().add(optionBtn);
     }
-    Scene scene = new Scene(content, 380, 240);
+    root.getChildren().addAll(content, resultWindow);
+    content.toFront();
+    Scene scene = new Scene(root, 380, 240);
     scene.setOnKeyPressed(e -> {
       if (e.getCode() == KeyCode.A) {
         try {

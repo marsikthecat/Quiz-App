@@ -1,40 +1,43 @@
 package com.example.quiz.ui;
 
-import javafx.scene.Scene;
+import com.example.quiz.QuestionListener;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
 /**
- * ResultWindow class to display the result of the quiz.
- * It shows the number of correct answers and provides options to retry or close.
+ * Displays the result of the quiz and provides options to retry or close.
  */
 
-public class ResultWindow extends Stage {
+public class ResultWindow extends VBox {
 
-  private boolean retry = false;
+  private final Label resultLabel = new Label();
+  private final Button tryAgain = new Button();
+  private final Button close = new Button();
 
   /**
    * Constructor for ResultWindow.
    */
-
-  public ResultWindow(int correct, int total) {
-    Label resultLabel = new Label("Correct: " + correct + " / " + total);
-    Button tryAgain = new Button("Try Again");
-    Button close = new Button("Close");
-    tryAgain.setOnAction(e -> {
-      retry = true;
-      this.close();
-    });
-    close.setOnAction(e -> this.close());
-
-    VBox root = new VBox(resultLabel, tryAgain, close);
-    Scene scene = new Scene(root, 250, 100);
-    this.setScene(scene);
+  public ResultWindow() {
+    HBox btnBar = new HBox();
+    btnBar.getChildren().addAll(tryAgain, close);
+    btnBar.setAlignment(Pos.CENTER);
+    btnBar.setSpacing(15);
+    getChildren().addAll(resultLabel, btnBar);
+    setAlignment(Pos.CENTER);
+    setSpacing(15);
   }
 
-  public boolean isRetry() {
-    return retry;
+  /**
+   * Constructor for ResultWindow.
+   */
+  public void init(int correct, int total, QuestionListener questionListener) {
+    resultLabel.setText("Correct: " + correct + " / " + total);
+    tryAgain.setText("Try Again");
+    close.setText("Close");
+    tryAgain.setOnAction(e -> questionListener.reset());
+    close.setOnAction(e -> System.exit(0));
   }
 }

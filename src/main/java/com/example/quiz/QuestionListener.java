@@ -2,9 +2,7 @@ package com.example.quiz;
 
 import com.example.quiz.components.Question;
 import com.example.quiz.components.QuestionSet;
-import com.example.quiz.ui.ResultWindow;
 import javafx.animation.PauseTransition;
-import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -15,7 +13,6 @@ import javafx.util.Duration;
 
 /**
  * QuestionListener class that listens to question changes and manages the game state.
- * It updates the UI properties based on the current question and handles answer checking.
  */
 
 public class QuestionListener {
@@ -90,11 +87,11 @@ public class QuestionListener {
   }
 
   /**
-     * Checks the answer selected by the user.
-     * If the answer is correct, it updates the background color and increments the correct count.
-     * If the answer is incorrect, it changes the background color to indicate failure.
-     * After a short pause, it either shows the result window or sets the next question.
-     */
+   * Checks the answer selected by the user.
+   * If the answer is correct, it updates the background color and increments the correct count.
+   * If the answer is incorrect, it changes the background color to indicate failure.
+   * After a short pause, it either shows the result window or sets the next question.
+   */
   public void checkAnswer(int i) {
     if (currentQuestion.get().getOptions().get(i).isCorrect()) {
       backgroundColorProperty.set("-fx-background-color: #bcffbc;");
@@ -103,22 +100,10 @@ public class QuestionListener {
       backgroundColorProperty.set("-fx-background-color: #ffb0b0;");
     }
     submitted.set(true);
-    PauseTransition pause = new PauseTransition(Duration.seconds(1.5));
+    PauseTransition pause = new PauseTransition(Duration.seconds(0.2));
     pause.setOnFinished(e -> {
       if (questionSet.isComplete()) {
         gameFinished.set(true);
-        Platform.runLater(() -> {
-          ResultWindow resultWindow = new ResultWindow(questionSet.getCorrect(),
-                  questionSet.size());
-          resultWindow.showAndWait();
-          if (resultWindow.isRetry()) {
-            gameFinished.set(false);
-            questionSet.scuffleAndStart();
-            setQuestionAndUpdateProperties();
-          } else {
-            System.exit(0);
-          }
-        });
       } else {
         setQuestionAndUpdateProperties();
       }
@@ -126,5 +111,14 @@ public class QuestionListener {
       submitted.set(false);
     });
     pause.play();
+  }
+
+  /**
+   * shuffles the questions and sets the game in the beginning state.
+   */
+  public void reset() {
+    gameFinished.set(false);
+    questionSet.shuffleAndStart();
+    setQuestionAndUpdateProperties();
   }
 }
