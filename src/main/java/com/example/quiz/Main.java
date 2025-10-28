@@ -19,11 +19,11 @@ import javafx.stage.Stage;
  * Option: 6 lines.
  * Question: 44 lines.
  * QuestionSet: 102 lines.
- * ResultWindow: 43 lines.
+ * ResultWindow: 46 lines.
  * Admin: 169 lines.
  * Main: 104 lines.
  * QuestionListener: 124 lines.
- * Total: 692 lines.
+ * Total: 695 lines + 43 lines CSS.
  */
 
 public class Main extends Application {

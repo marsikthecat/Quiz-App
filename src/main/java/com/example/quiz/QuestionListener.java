@@ -100,7 +100,7 @@ public class QuestionListener {
       backgroundColorProperty.set("-fx-background-color: #ffb0b0;");
     }
     submitted.set(true);
-    PauseTransition pause = new PauseTransition(Duration.seconds(0.2));
+    PauseTransition pause = new PauseTransition(Duration.seconds(1.25));
     pause.setOnFinished(e -> {
       if (questionSet.isComplete()) {
         gameFinished.set(true);

@@ -22,6 +22,9 @@ public class ResultWindow extends VBox {
    */
   public ResultWindow() {
     HBox btnBar = new HBox();
+    tryAgain.getStyleClass().add("result-button");
+    close.getStyleClass().add("result-button");
+    resultLabel.getStyleClass().add("score-result");
     btnBar.getChildren().addAll(tryAgain, close);
     btnBar.setAlignment(Pos.CENTER);
     btnBar.setSpacing(15);
