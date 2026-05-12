@@ -101,7 +101,7 @@ public class QuestionListener {
     }
     submitted.set(true);
     PauseTransition pause = new PauseTransition(Duration.seconds(1.25));
-    pause.setOnFinished(e -> {
+    pause.setOnFinished(_ -> {
       if (questionSet.isComplete()) {
         gameFinished.set(true);
       } else {
@@ -114,7 +114,7 @@ public class QuestionListener {
   }
 
   /**
-   * shuffles the questions and sets the game in the beginning state.
+   * Shuffles the questions and sets the game in the beginning state.
    */
   public void reset() {
     gameFinished.set(false);

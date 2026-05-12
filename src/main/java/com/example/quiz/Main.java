@@ -15,15 +15,15 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 /**
- * Main Quiz Programm.
+ * Main Quiz Program.
  * Option: 6 lines.
  * Question: 44 lines.
  * QuestionSet: 102 lines.
  * ResultWindow: 46 lines.
  * Admin: 169 lines.
- * Main: 104 lines.
+ * Main: 100 lines.
  * QuestionListener: 124 lines.
- * Total: 695 lines + 43 lines CSS.
+ * Total: 691 lines + 43 lines CSS.
  */
 
 public class Main extends Application {
@@ -34,7 +34,6 @@ public class Main extends Application {
 
   @Override
   public void start(Stage stage) {
-    StackPane root = new StackPane();
     VBox content = new VBox();
     content.setAlignment(Pos.CENTER);
     content.setStyle("-fx-background-color: white");
@@ -46,7 +45,7 @@ public class Main extends Application {
     content.disableProperty().bind(questionListener.gameFinishedProperty());
     content.styleProperty().bind(questionListener.getBackgroundColorProperty());
 
-    questionListener.gameFinishedProperty().addListener((obs, oldVal, newVal) -> {
+    questionListener.gameFinishedProperty().addListener((_, _, newVal) -> {
       if (newVal) {
         resultWindow.init(questionSet.getCorrect(), questionSet.size(), questionListener);
         resultWindow.toFront();
@@ -61,21 +60,22 @@ public class Main extends Application {
       optionBtn.getStyleClass().add("custom-button");
       VBox.setMargin(optionBtn, new Insets(5, 0, 0, 5));
       optionBtn.textProperty().bind(
-        switch (i) {
+          switch (i) {
           case 0 -> questionListener.getOption1Property();
           case 1 -> questionListener.getOption2Property();
           case 2 -> questionListener.getOption3Property();
           case 3 -> questionListener.getOption4Property();
           default -> throw new IllegalStateException("Unexpected value: " + i);
-        });
+          });
       int finalI = i;
-      optionBtn.setOnAction(e -> {
+      optionBtn.setOnAction(_ -> {
         if (!questionListener.getSubmittedProperty().get()) {
           questionListener.checkAnswer(finalI);
         }
       });
       content.getChildren().add(optionBtn);
     }
+    StackPane root = new StackPane();
     root.getChildren().addAll(content, resultWindow);
     content.toFront();
     Scene scene = new Scene(root, 380, 240);
@@ -96,9 +96,5 @@ public class Main extends Application {
     stage.setTitle("Quiz");
     stage.setScene(scene);
     stage.show();
-  }
-
-  public static void main(String[] args) {
-    launch(args);
   }
 }

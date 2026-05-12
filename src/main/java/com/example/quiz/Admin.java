@@ -44,14 +44,14 @@ public class Admin extends Stage {
     optionsField.setPromptText("Enter options and their truthiness "
             + "('Banana;true'), seperated by commas");
     Button addButton = new Button("Add Question");
-    addButton.setOnAction(e -> {
+    addButton.setOnAction(_ -> {
       try {
         addQuestion(questionField.getText(), optionsField.getText().split(","));
       } catch (IOException ex) {
         throw new RuntimeException(ex);
       }
     });
-    questionList.setCellFactory(param -> new ListCell<>() {
+    questionList.setCellFactory(_ -> new ListCell<>() {
         @Override
         protected void updateItem(String item, boolean empty) {
             super.updateItem(item, empty);

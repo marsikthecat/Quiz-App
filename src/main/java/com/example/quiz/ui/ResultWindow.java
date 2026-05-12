@@ -40,7 +40,7 @@ public class ResultWindow extends VBox {
     resultLabel.setText("Correct: " + correct + " / " + total);
     tryAgain.setText("Try Again");
     close.setText("Close");
-    tryAgain.setOnAction(e -> questionListener.reset());
-    close.setOnAction(e -> System.exit(0));
+    tryAgain.setOnAction(_ -> questionListener.reset());
+    close.setOnAction(_ -> System.exit(0));
   }
 }
